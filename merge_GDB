@@ -1,0 +1,69 @@
+#in python console QGIS copy this:
+
+from osgeo import ogr
+import os
+import processing 
+
+
+##############################
+#VARIABILI DA SOSTITUIRE:
+#SCELTA UTENTE
+list_layer_to_merge = ['diga', 'bosco']
+folder_path = r"C:\DATA\DBSN\Puglia"
+################
+
+#project = QgsProject.instance()
+
+def merge_layers(layer_list,path,layer_name):
+# Create a new processing context
+    context = QgsProcessingContext()
+    
+# Define the parameters for the merge algorithm
+    parameters = {
+        'LAYERS': layer_list,
+        'OUTPUT': path + '/MERGED_' + layer_name + '.gpkg'  # Replace with the desired output path
+    }
+
+# Run the merge algorithm
+    result = processing.run("native:mergevectorlayers", parameters, context=context)
+
+# Check if the algorithm executed successfully
+    if result['OUTPUT']:
+        print("Layers merged and saved successfully to:", result['OUTPUT'])
+    else:
+        print("Failed to merge the layers.")
+    
+    
+
+#driver = ogr.GetDriverByName("OpenFileGDB")
+#print (driver)
+
+
+
+gdb_files = []  # Initialize an empty list to store the .gdb files
+
+# Iterate over all files in the folder
+for filename in os.listdir(folder_path):
+    file_path = os.path.join(folder_path, filename)  # Get the full file path
+    
+    # Check if the file has a .gdb extension
+    if filename.endswith('.gdb'):
+        gdb_files.append(file_path)  # Add the .gdb file to the list
+        
+print(gdb_files)  # Print the list of .gdb files
+
+list_layers = []
+
+for layer_name in list_layer_to_merge:
+
+    for gdb_path in gdb_files:
+        layer = QgsVectorLayer(gdb_path + '|layername=' + layer_name, layer_name, 'ogr')
+        if layer.isValid():
+    # per vederesul canvas i layer da unire decommentare questo:
+        # project.addMapLayer(layer)
+        list_layers.append(layer)
+        
+#call the function
+    merge_layers(list_layers,folder_path,layer_name)
+
+print('THE END')
