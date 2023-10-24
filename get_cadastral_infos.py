@@ -71,7 +71,7 @@ class POINTS_getComProvReg4(QgsProcessingAlgorithm):
     
     def initAlgorithm(self, config=None):
         
-        # We add the input vector features source. It can have any kind of
+        # We add the input vector features source. It can have point
         # geometry.
         
         self.addParameter(
