@@ -1,0 +1,5 @@
+label a polygon layer grouping features by "provincia" field.
+centroid(collect($geometry, "provincia"))
+
+visualization tab: get only one result for a grop of features that have the same field "provincia"
+$id = array_first(array_agg($id,"provincia"))
